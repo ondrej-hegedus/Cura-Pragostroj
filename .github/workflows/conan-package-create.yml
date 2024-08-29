@@ -1,46 +1,46 @@
 name: Create and Upload Conan package
 
-on:
-    workflow_call:
-        inputs:
-            recipe_id_full:
-                required: true
-                type: string
+# on:
+#     workflow_call:
+#         inputs:
+#             recipe_id_full:
+#                 required: true
+#                 type: string
 
-            recipe_id_latest:
-                required: false
-                type: string
+#             recipe_id_latest:
+#                 required: false
+#                 type: string
 
-            runs_on:
-                required: true
-                type: string
+#             runs_on:
+#                 required: true
+#                 type: string
 
-            python_version:
-                required: true
-                type: string
+#             python_version:
+#                 required: true
+#                 type: string
 
-            conan_config_branch:
-                required: false
-                type: string
+#             conan_config_branch:
+#                 required: false
+#                 type: string
 
-            conan_logging_level:
-                required: false
-                type: string
+#             conan_logging_level:
+#                 required: false
+#                 type: string
 
-            conan_clean_local_cache:
-                required: false
-                type: boolean
-                default: false
+#             conan_clean_local_cache:
+#                 required: false
+#                 type: boolean
+#                 default: false
 
-            conan_upload_community:
-                required: false
-                default: true
-                type: boolean
+#             conan_upload_community:
+#                 required: false
+#                 default: true
+#                 type: boolean
 
-            create_from_source:
-                required: false
-                default: false
-                type: boolean
+#             create_from_source:
+#                 required: false
+#                 default: false
+#                 type: boolean
 
 env:
     CONAN_LOGIN_USERNAME_CURA: ${{ secrets.CONAN_USER }}

@@ -1,27 +1,27 @@
 name: Get Conan Recipe Version
 
-on:
-    workflow_call:
-        inputs:
-            success:
-                required: true
-                type: boolean
+# on:
+#     workflow_call:
+#         inputs:
+#             success:
+#                 required: true
+#                 type: boolean
 
-            success_title:
-                required: true
-                type: string
+#             success_title:
+#                 required: true
+#                 type: string
 
-            success_body:
-                required: true
-                type: string
+#             success_body:
+#                 required: true
+#                 type: string
 
-            failure_title:
-                required: true
-                type: string
+#             failure_title:
+#                 required: true
+#                 type: string
 
-            failure_body:
-                required: true
-                type: string
+#             failure_body:
+#                 required: true
+#                 type: string
 
 
 jobs:

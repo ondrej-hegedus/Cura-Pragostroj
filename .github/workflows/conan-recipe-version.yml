@@ -1,41 +1,41 @@
 name: Get Conan Recipe Version
 
-on:
-    workflow_call:
-        inputs:
-            project_name:
-                required: true
-                type: string
+# on:
+#     workflow_call:
+#         inputs:
+#             project_name:
+#                 required: true
+#                 type: string
 
-            additional_buildmetadata:
-                required: false
-                default: ""
-                type: string
+#             additional_buildmetadata:
+#                 required: false
+#                 default: ""
+#                 type: string
 
-        outputs:
-            recipe_id_full:
-                description: "The full Conan recipe id: <name>/<version>@<user>/<channel>"
-                value: ${{ jobs.get-semver.outputs.recipe_id_full }}
+#         outputs:
+#             recipe_id_full:
+#                 description: "The full Conan recipe id: <name>/<version>@<user>/<channel>"
+#                 value: ${{ jobs.get-semver.outputs.recipe_id_full }}
 
-            recipe_id_latest:
-                description: "The full Conan recipe aliased (latest) id: <name>/(latest)@<user>/<channel>"
-                value: ${{ jobs.get-semver.outputs.recipe_id_latest }}
+#             recipe_id_latest:
+#                 description: "The full Conan recipe aliased (latest) id: <name>/(latest)@<user>/<channel>"
+#                 value: ${{ jobs.get-semver.outputs.recipe_id_latest }}
 
-            recipe_semver_full:
-                description: "The full semver <Major>.<Minor>.<Patch>-<PreReleaseTag>+<BuildMetaData>"
-                value: ${{ jobs.get-semver.outputs.semver_full }}
+#             recipe_semver_full:
+#                 description: "The full semver <Major>.<Minor>.<Patch>-<PreReleaseTag>+<BuildMetaData>"
+#                 value: ${{ jobs.get-semver.outputs.semver_full }}
 
-            is_release_branch:
-                description: "is current branch a release branch?"
-                value: ${{ jobs.get-semver.outputs.release_branch }}
+#             is_release_branch:
+#                 description: "is current branch a release branch?"
+#                 value: ${{ jobs.get-semver.outputs.release_branch }}
 
-            recipe_user:
-                description: "The conan user"
-                value: ${{ jobs.get-semver.outputs.user }}
+#             recipe_user:
+#                 description: "The conan user"
+#                 value: ${{ jobs.get-semver.outputs.user }}
 
-            recipe_channel:
-                description: "The conan channel"
-                value: ${{ jobs.get-semver.outputs.channel }}
+#             recipe_channel:
+#                 description: "The conan channel"
+#                 value: ${{ jobs.get-semver.outputs.channel }}
 
 jobs:
     get-semver:
@@ -85,7 +85,7 @@ jobs:
                     from conans import tools
                     from conans.errors import ConanException
                     from git import Repo
-                    
+
                     repo = Repo('.')
                     user = "${{ github.repository_owner }}".lower()
                     project_name = "${{ inputs.project_name }}"
@@ -94,7 +94,7 @@ jobs:
                     is_tag = "${{ github.ref_type }}" == "tag"
                     is_release_branch = False
                     buildmetadata = "" if "${{ inputs.additional_buildmetadata }}" == "" else "${{ inputs.additional_buildmetadata }}_"
-                    
+
                     # FIXME: for when we push a tag (such as an release)
                     channel = "testing"
                     if is_tag:
@@ -114,10 +114,10 @@ jobs:
                             channel = 'testing'
                         else:
                             channel = repo.active_branch.name.split("_")[0].replace("-", "_").lower()
-                    
+
                         if "pull_request" in event_name:
                             channel = f"pr_{issue_number}"
-                    
+
                     # %% Get the actual version
                     latest_branch_version = tools.Version("0.0.0")
                     latest_branch_tag = None
@@ -131,7 +131,7 @@ jobs:
                         if version > latest_branch_version:
                             latest_branch_version = version
                             latest_branch_tag = repo.tag(tag)
-                    
+
                     if latest_branch_tag:
                         # %% Get the actual version
                         no_commits = 0
@@ -139,7 +139,7 @@ jobs:
                             if commit == latest_branch_tag.commit:
                                 break
                             no_commits += 1
-                        
+
                         if no_commits == 0:
                             # This is a release
                             actual_version = f"{latest_branch_version.major}.{latest_branch_version.minor}.{latest_branch_version.patch}"
@@ -172,7 +172,7 @@ jobs:
                     else:
                         # FIXME: for external PR's
                         actual_version = f"5.2.0-alpha+{buildmetadata}pr_{issue_number}"
-                    
+
                     if is_tag:
                         print("THE TAG IS: ", ${{ github.ref_name }})
                     if is_tag and ${{ github.ref_name }} == "5.2.0-beta:
@@ -196,7 +196,7 @@ jobs:
                     subprocess.call(cmd_semver_full)
                     cmd_is_release_branch = ["echo", f"::set-output name=is_release_branch::{str(is_release_branch).lower()}"]
                     subprocess.call(cmd_is_release_branch)
-                    
+
                     print("::group::Conan Recipe Information")
                     print(f"name = {project_name}")
                     print(f"version = {actual_version}")

@@ -6,47 +6,47 @@ name: conan-package
 #
 # It should run on pushes against main or CURA-* branches, but it will only create the binaries for main and release branches
 
-on:
-    workflow_dispatch:
-        inputs:
-            create_binaries_windows:
-                required: true
-                default: false
-                description: 'create binaries Windows'
-            create_binaries_linux:
-                required: true
-                default: false
-                description: 'create binaries Linux'
-            create_binaries_macos:
-                required: true
-                default: false
-                description: 'create binaries Macos'
+# on:
+#     workflow_dispatch:
+#         inputs:
+#             create_binaries_windows:
+#                 required: true
+#                 default: false
+#                 description: 'create binaries Windows'
+#             create_binaries_linux:
+#                 required: true
+#                 default: false
+#                 description: 'create binaries Linux'
+#             create_binaries_macos:
+#                 required: true
+#                 default: false
+#                 description: 'create binaries Macos'
 
-    push:
-        paths:
-            - 'plugins/**'
-            - 'resources/**'
-            - 'cura/**'
-            - 'icons/**'
-            - 'tests/**'
-            - 'packaging/**'
-            - '.github/workflows/conan-*.yml'
-            - '.github/workflows/notify.yml'
-            - '.github/workflows/requirements-conan-package.txt'
-            - 'requirements*.txt'
-            - 'conanfile.py'
-            - 'conandata.yml'
-            - 'GitVersion.yml'
-            - '*.jinja'
-        branches:
-            - main
-            - 'CURA-*'
-            - '[1-9].[0-9]'
-            - '[1-9].[0-9][0-9]'
-        tags:
-            - '[1-9].[0-9].[0-9]*'
-            - '[1-9].[0-9].[0-9]'
-            - '[1-9].[0-9][0-9].[0-9]*'
+#     push:
+#         paths:
+#             - 'plugins/**'
+#             - 'resources/**'
+#             - 'cura/**'
+#             - 'icons/**'
+#             - 'tests/**'
+#             - 'packaging/**'
+#             - '.github/workflows/conan-*.yml'
+#             - '.github/workflows/notify.yml'
+#             - '.github/workflows/requirements-conan-package.txt'
+#             - 'requirements*.txt'
+#             - 'conanfile.py'
+#             - 'conandata.yml'
+#             - 'GitVersion.yml'
+#             - '*.jinja'
+#         branches:
+#             - main
+#             - 'CURA-*'
+#             - '[1-9].[0-9]'
+#             - '[1-9].[0-9][0-9]'
+#         tags:
+#             - '[1-9].[0-9].[0-9]*'
+#             - '[1-9].[0-9].[0-9]'
+#             - '[1-9].[0-9][0-9].[0-9]*'
 
 jobs:
     conan-recipe-version:

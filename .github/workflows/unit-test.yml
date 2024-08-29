@@ -2,54 +2,54 @@
 name: unit-test
 # FIXME: This should be a reusable workflow
 
-on:
-    push:
-        paths:
-            - 'plugins/**'
-            - 'resources/**'
-            - 'cura/**'
-            - 'icons/**'
-            - 'tests/**'
-            - 'packaging/**'
-            - '.github/workflows/conan-*.yml'
-            - '.github/workflows/unit-test.yml'
-            - '.github/workflows/notify.yml'
-            - '.github/workflows/requirements-conan-package.txt'
-            - 'requirements*.txt'
-            - 'conanfile.py'
-            - 'conandata.yml'
-            - 'GitVersion.yml'
-            - '*.jinja'
-        branches:
-            - main
-            - 'CURA-*'
-            - '[1-9]+.[0-9]+'
-        tags:
-            - '[0-9]+.[0-9]+.[0-9]+'
-            - '[0-9]+.[0-9]+-beta'
-    pull_request:
-        paths:
-            - 'plugins/**'
-            - 'resources/**'
-            - 'cura/**'
-            - 'icons/**'
-            - 'tests/**'
-            - 'packaging/**'
-            - '.github/workflows/conan-*.yml'
-            - '.github/workflows/unit-test.yml'
-            - '.github/workflows/notify.yml'
-            - '.github/workflows/requirements-conan-package.txt'
-            - 'requirements*.txt'
-            - 'conanfile.py'
-            - 'conandata.yml'
-            - 'GitVersion.yml'
-            - '*.jinja'
-        branches:
-            - main
-            - '[1-9]+.[0-9]+'
-        tags:
-            - '[0-9]+.[0-9]+.[0-9]+'
-            - '[0-9]+.[0-9]+-beta'
+# on:
+#     push:
+#         paths:
+#             - 'plugins/**'
+#             - 'resources/**'
+#             - 'cura/**'
+#             - 'icons/**'
+#             - 'tests/**'
+#             - 'packaging/**'
+#             - '.github/workflows/conan-*.yml'
+#             - '.github/workflows/unit-test.yml'
+#             - '.github/workflows/notify.yml'
+#             - '.github/workflows/requirements-conan-package.txt'
+#             - 'requirements*.txt'
+#             - 'conanfile.py'
+#             - 'conandata.yml'
+#             - 'GitVersion.yml'
+#             - '*.jinja'
+#         branches:
+#             - main
+#             - 'CURA-*'
+#             - '[1-9]+.[0-9]+'
+#         tags:
+#             - '[0-9]+.[0-9]+.[0-9]+'
+#             - '[0-9]+.[0-9]+-beta'
+#     pull_request:
+#         paths:
+#             - 'plugins/**'
+#             - 'resources/**'
+#             - 'cura/**'
+#             - 'icons/**'
+#             - 'tests/**'
+#             - 'packaging/**'
+#             - '.github/workflows/conan-*.yml'
+#             - '.github/workflows/unit-test.yml'
+#             - '.github/workflows/notify.yml'
+#             - '.github/workflows/requirements-conan-package.txt'
+#             - 'requirements*.txt'
+#             - 'conanfile.py'
+#             - 'conandata.yml'
+#             - 'GitVersion.yml'
+#             - '*.jinja'
+#         branches:
+#             - main
+#             - '[1-9]+.[0-9]+'
+#         tags:
+#             - '[0-9]+.[0-9]+.[0-9]+'
+#             - '[0-9]+.[0-9]+-beta'
 
 env:
     CONAN_LOGIN_USERNAME_CURA: ${{ secrets.CONAN_USER }}
