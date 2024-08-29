@@ -54,6 +54,10 @@ if TYPE_CHECKING:
     from cura.Machines.VariantNode import VariantNode
 
 
+
+import logging
+logger = logging.getLogger(__name__)
+
 class MachineManager(QObject):
     def __init__(self, application: "CuraApplication", parent: Optional["QObject"] = None) -> None:
         super().__init__(parent)
@@ -158,6 +162,9 @@ class MachineManager(QObject):
     rootMaterialChanged = pyqtSignal()
     numUserSettingsChanged = pyqtSignal()
 
+    # Added by Pragostroj
+    # activeMachineChanged = pyqtSignal()
+
     def _reCalculateNumUserSettings(self):
         if not self._global_container_stack:
             if self._num_user_settings != 0:
@@ -252,6 +259,8 @@ class MachineManager(QObject):
 
     @pyqtProperty("QVariantList", notify = outputDevicesChanged)
     def printerOutputDevices(self) -> List[PrinterOutputDevice]:
+        Logger.debug('------printerOutputDevices:-------')
+        Logger.debug(str(self._printer_output_devices))
         return self._printer_output_devices
 
     @pyqtProperty(int, constant=True)
@@ -338,6 +347,7 @@ class MachineManager(QObject):
 
     @pyqtSlot(str)
     def setActiveMachine(self, stack_id: Optional[str]) -> None:
+        Logger.debug('-----------_SETTING ACTIVE MACHINE_-------------')
         self.blurSettings.emit()  # Ensure no-one has focus.
 
         if not stack_id:
@@ -378,6 +388,9 @@ class MachineManager(QObject):
             extruder_manager.activeExtruderChanged.emit()
 
         self._validateVariantsAndMaterials(global_stack)
+        # self.activeMachineChanged.emit()
+        # self.outputDevicesChanged.emit()
+
 
     def _validateVariantsAndMaterials(self, global_stack) -> None:
         # Validate if the machine has the correct variants and materials.
