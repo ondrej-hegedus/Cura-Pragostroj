@@ -38,9 +38,9 @@ on:
         default: 'self-hosted-ARM64'
         type: choice
         options:
-          - self-hosted-X64
-          - self-hosted-ARM64
-          - macos-11
+          # - self-hosted-X64
+          # - self-hosted-ARM64
+          # - macos-11
           - macos-12
 
 jobs:
