@@ -41,7 +41,7 @@ on:
 
 jobs:
   linux-installer:
-    uses: ondrej-hegedus/Cura-Pragostroj/.github/workflows/cura-workflows/cura-installer-linux.yml@main
+    uses: ondrej-hegedus/Cura-Pragostroj/.github/workflows/cura-installer-linux.yml@main
     with:
       cura_conan_version: ${{ inputs.cura_conan_version }}
       conan_args: ${{ inputs.conan_args }}
