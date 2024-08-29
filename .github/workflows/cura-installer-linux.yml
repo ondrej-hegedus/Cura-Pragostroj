@@ -52,6 +52,7 @@ env:
   CONAN_LOGIN_USERNAME: ${{ secrets.CONAN_USER }}
   CONAN_PASSWORD: ${{ secrets.CONAN_PASS }}
   GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
+  GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
   CURA_CONAN_VERSION: ${{ inputs.cura_conan_version }}
   ENTERPRISE: ${{ inputs.enterprise }}
   STAGING: ${{ inputs.staging }}
@@ -123,7 +124,7 @@ jobs:
       #       ${{ runner.os }}-conan-downloads-
 
       - name: Configure GPG Key Linux (Bash)
-        run: echo -n "$GPG_PRIVATE_KEY" | base64 --decode | gpg --import
+        run: echo -n "$GPG_PRIVATE_KEY" | base64 --decode | gpg --import --passphrase $GPG_PASSPHRASE
 
       - name: Create the Packages (Bash)
         run: conan install $CURA_CONAN_VERSION ${{ inputs.conan_args }} --build=missing --update -if cura_inst -g VirtualPythonEnv -o cura:enterprise=$ENTERPRISE -o cura:staging=$STAGING  -o cura:internal=${{ inputs.conan_internal }} -c tools.build:skip_test=True -s curaengine:build_type=RelWithDebInfo -s arcus:build_type=RelWithDebInfo -s clipper:build_type=RelWithDebInfo
