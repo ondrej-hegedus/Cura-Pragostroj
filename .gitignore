@@ -99,3 +99,5 @@ conanbuildinfo.txt
 graph_info.json
 Ultimaker-Cura.spec
 .run/
+.env
+.vscode/
