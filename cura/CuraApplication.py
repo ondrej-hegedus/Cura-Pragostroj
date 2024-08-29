@@ -183,7 +183,7 @@ class CuraApplication(QtApplication):
         self.empty_container = None  # type: EmptyInstanceContainer
         self.empty_definition_changes_container = None  # type: EmptyInstanceContainer
         self.empty_variant_container = None  # type: EmptyInstanceContainer
-        self.empty_intent_container = None  # type: EmptyInstanceContainer 
+        self.empty_intent_container = None  # type: EmptyInstanceContainer
         self.empty_material_container = None  # type: EmptyInstanceContainer
         self.empty_quality_container = None  # type: EmptyInstanceContainer
         self.empty_quality_changes_container = None  # type: EmptyInstanceContainer
@@ -504,7 +504,7 @@ class CuraApplication(QtApplication):
             "CuraEngineBackend", #Cura is useless without this one since you can't slice.
             "FileLogger", #You want to be able to read the log if something goes wrong.
             "XmlMaterialProfile", #Cura crashes without this one.
-            "Marketplace", #This contains the interface to enable/disable plug-ins, so if you disable it you can't enable it back.
+            # "Marketplace", #This contains the interface to enable/disable plug-ins, so if you disable it you can't enable it back.
             "PrepareStage", #Cura is useless without this one since you can't load models.
             "PreviewStage", #This shows the list of the plugin views that are installed in Cura.
             "MonitorStage", #Major part of Cura's functionality.
@@ -1872,7 +1872,7 @@ class CuraApplication(QtApplication):
         select_models_on_load = self.getPreferences().getValue("cura/select_models_on_load")
 
         nodes_to_arrange = []  # type: List[CuraSceneNode]
-        
+
         fixed_nodes = []
         for node_ in DepthFirstIterator(self.getController().getScene().getRoot()):
             # Only count sliceable objects
