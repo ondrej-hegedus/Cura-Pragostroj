@@ -1,9 +1,9 @@
 name: printer-linter-pr-post
 
-on:
-  workflow_run:
-    workflows: ["printer-linter-pr-diagnose"]
-    types: [completed]
+# on:
+#   workflow_run:
+#     workflows: ["printer-linter-pr-diagnose"]
+#     types: [completed]
 
 jobs:
   clang-tidy-results:

@@ -1,13 +1,13 @@
 name: printer-linter-format
 
-on:
-    push:
-        paths:
-            - 'resources/definitions/**'
-            - 'resources/extruders/**'
-            - 'resources/intent/**'
-            - 'resources/quality/**'
-            - 'resources/variants/**'
+# on:
+#     push:
+#         paths:
+#             - 'resources/definitions/**'
+#             - 'resources/extruders/**'
+#             - 'resources/intent/**'
+#             - 'resources/quality/**'
+#             - 'resources/variants/**'
 
 jobs:
     printer-linter-format:

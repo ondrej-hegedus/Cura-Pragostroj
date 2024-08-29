@@ -2,16 +2,16 @@
 #       This is basically just the standard one that is sugested on 'new workflow'.
 
 name: Scorecard supply-chain security
-on:
-  # For Branch-Protection check. Only the default branch is supported. See
-  # https://github.com/ossf/scorecard/blob/main/docs/checks.md#branch-protection
-  branch_protection_rule:
-  # To guarantee Maintained check is occasionally updated. See
-  # https://github.com/ossf/scorecard/blob/main/docs/checks.md#maintained
-  schedule:
-    - cron: '25 2 * * 5'
-  push:
-    branches: [ "main" ]
+# on:
+#   # For Branch-Protection check. Only the default branch is supported. See
+#   # https://github.com/ossf/scorecard/blob/main/docs/checks.md#branch-protection
+#   branch_protection_rule:
+#   # To guarantee Maintained check is occasionally updated. See
+#   # https://github.com/ossf/scorecard/blob/main/docs/checks.md#maintained
+#   schedule:
+#     - cron: '25 2 * * 5'
+#   push:
+#     branches: [ "main" ]
 
 # Declare default permissions as read only.
 permissions: read-all

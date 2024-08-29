@@ -1,9 +1,9 @@
 name: printer-linter-pr-diagnose
 
-on:
-  pull_request:
-    path:
-      - "resources/**"
+# on:
+#   pull_request:
+#     path:
+#       - "resources/**"
 
 jobs:
   printer-linter-diagnose:

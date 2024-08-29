@@ -1,27 +1,27 @@
 name: conan-package
 
-on:
-  push:
-    paths:
-      - 'plugins/**'
-      - 'resources/**'
-      - 'cura/**'
-      - 'icons/**'
-      - 'tests/**'
-      - 'packaging/**'
-      - '.github/workflows/conan-*.yml'
-      - '.github/workflows/notify.yml'
-      - '.github/workflows/requirements-runner.txt'
-      - 'requirements*.txt'
-      - 'conanfile.py'
-      - 'conandata.yml'
-      - '*.jinja'
-    branches:
-      - 'main'
-      - 'CURA-*'
-      - 'PP-*'
-      - '[0-9].[0-9]*'
-      - '[0-9].[0-9][0-9]*'
+# on:
+#   push:
+#     paths:
+#       - 'plugins/**'
+#       - 'resources/**'
+#       - 'cura/**'
+#       - 'icons/**'
+#       - 'tests/**'
+#       - 'packaging/**'
+#       - '.github/workflows/conan-*.yml'
+#       - '.github/workflows/notify.yml'
+#       - '.github/workflows/requirements-runner.txt'
+#       - 'requirements*.txt'
+#       - 'conanfile.py'
+#       - 'conandata.yml'
+#       - '*.jinja'
+#     branches:
+#       - 'main'
+#       - 'CURA-*'
+#       - 'PP-*'
+#       - '[0-9].[0-9]*'
+#       - '[0-9].[0-9][0-9]*'
 
 env:
   CONAN_LOGIN_USERNAME_CURA: ${{ secrets.CONAN_USER }}

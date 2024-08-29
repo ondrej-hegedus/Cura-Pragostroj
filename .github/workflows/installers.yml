@@ -1,39 +1,39 @@
 name: All installers
 run-name: ${{ inputs.cura_conan_version }} by @${{ github.actor }}
 
-on:
-  workflow_dispatch:
-    inputs:
-      cura_conan_version:
-        description: 'Cura Conan Version'
-        default: 'cura/latest@ultimaker/testing'
-        required: true
-        type: string
-      conan_args:
-        description: 'Conan args: eq.: --require-override'
-        default: ''
-        required: false
-        type: string
-      enterprise:
-        description: 'Build Cura as an Enterprise edition'
-        default: false
-        required: true
-        type: boolean
-      staging:
-        description: 'Use staging API'
-        default: false
-        required: true
-        type: boolean
-      nightly:
-        description: 'Upload to nightly release'
-        default: false
-        required: true
-        type: boolean
+# on:
+#   workflow_dispatch:
+#     inputs:
+#       cura_conan_version:
+#         description: 'Cura Conan Version'
+#         default: 'cura/latest@ultimaker/testing'
+#         required: true
+#         type: string
+#       conan_args:
+#         description: 'Conan args: eq.: --require-override'
+#         default: ''
+#         required: false
+#         type: string
+#       enterprise:
+#         description: 'Build Cura as an Enterprise edition'
+#         default: false
+#         required: true
+#         type: boolean
+#       staging:
+#         description: 'Use staging API'
+#         default: false
+#         required: true
+#         type: boolean
+#       nightly:
+#         description: 'Upload to nightly release'
+#         default: false
+#         required: true
+#         type: boolean
 
-  schedule:
-    # Daily at 4:15 CET (main-branch) and 5:15 CET (release-branch)
-    - cron: '15 3 * * *'
-    - cron: '15 4 * * *'
+#   schedule:
+#     # Daily at 4:15 CET (main-branch) and 5:15 CET (release-branch)
+#     - cron: '15 3 * * *'
+#     - cron: '15 4 * * *'
 
 env:
   CONAN_ARGS: ${{ inputs.conan_args || '' }}
@@ -115,7 +115,7 @@ jobs:
 
       - name: Set the run info as environment variables
         run: |
-          . run_info.sh 
+          . run_info.sh
 
       - name: Output the name file name and extension
         id: filename
@@ -252,10 +252,10 @@ jobs:
           import os
           import datetime
           from jinja2 import Template
-          
+
           with open(".github/workflows/release_notes.md.jinja", "r") as f:
               release_notes = Template(f.read())
-          
+
           current_nightly_beta = "${{ needs.default_values.outputs.release_tag }}".split("nightly-")[-1]
           with open("release-notes.md", "w") as f:
               f.write(release_notes.render(
