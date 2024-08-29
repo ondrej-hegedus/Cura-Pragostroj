@@ -1,0 +1,89 @@
+{
+  "version": 2,
+  "name": "pragostroj base",
+  "inherits": "fdmprinter",
+  "metadata": {
+    "type": "machine",
+    "setting_version": 17,
+    "author": "Pragostroj",
+    "manufacturer": "Pragostroj",
+    "quality_definition": "pragostroj_base",
+    "visible": false,
+    "file_formats": "text/x-gcode;model/stl;application/x-wavefront-obj;application/x3g",
+    "platform_offset": [
+      40,
+      -320,
+      -400
+    ],
+    "has_machine_quality": true,
+    "has_materials": true,
+    "has_variant_buildplates": true,
+    "has_variants": true,
+    "machine_heated_build_volume": false,
+    "preferred_variant_name": "E 0.5",
+    "preferred_variant_buildplate_name": "Glass",
+    "preferred_quality_type": "normal",
+    "variants_name": "Print core",
+    "nozzle_offsetting_for_disallowed_areas": false,
+    "machine_extruder_trains":
+    {
+        "0": "pragostroj_extruder_0",
+        "1": "pragostroj_extruder_1"
+    },
+    "first_start_actions": [
+      "DiscoverUM3Action"
+    ],
+    "supported_actions": [
+      "DiscoverUM3Action"
+    ],
+    "supports_usb_connection": false,
+    "supports_network_connection": true,
+    "weight": -2,
+    "firmware_update_info": {
+      "id": 9051,
+      "check_urls": [
+        "https://localhost"
+      ],
+      "update_url": "https://localhost"
+    },
+    "bom_numbers": [
+      9051,
+      214475
+    ]
+  },
+  "overrides": {
+    "z_seam_corner": {
+      "label": "Seam Corner Preference",
+      "description": "Control whether corners on the model outline influence the position of the seam. None means that corners have no influence on the seam position. Hide Seam makes the seam more likely to occur on an inside corner. Expose Seam makes the seam more likely to occur on an outside corner. Hide or Expose Seam makes the seam more likely to occur at an inside or outside corner. Smart Hiding allows both inside and outside corners, but chooses inside corners more frequently, if appropriate.",
+      "type": "enum",
+      "options": {
+        "z_seam_corner_none": "None",
+        "z_seam_corner_inner": "Hide Seam",
+        "z_seam_corner_outer": "Expose Seam",
+        "z_seam_corner_any": "Hide or Expose Seam",
+        "z_seam_corner_weighted": "Smart Hiding"
+      },
+      "default_value": "z_seam_corner_none",
+      "enabled": "z_seam_type != 'random'",
+      "limit_to_extruder": "wall_0_extruder_nr",
+      "settable_per_mesh": true
+    },
+    "travel_retract_before_outer_wall": {
+      "label": "Retract Before Outer Wall",
+      "description": "Always retract when moving to start an outer wall.",
+      "type": "bool",
+      "default_value": true,
+      "enabled": "retraction_enable",
+      "settable_per_mesh": false,
+      "settable_per_extruder": false
+    },
+    "support_enable": {
+      "label": "Generate Support",
+      "description": "Generate structures to support parts of the model which have overhangs. Without these structures, such parts would collapse during printing.",
+      "type": "bool",
+      "default_value": true,
+      "settable_per_mesh": true,
+      "settable_per_extruder": false
+    }
+  }
+}
