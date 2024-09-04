@@ -92,6 +92,10 @@ jobs:
           conan config install https://github.com/Ultimaker/conan-config.git
           conan config install https://github.com/Ultimaker/conan-config.git -a "-b runner/${{ runner.os }}/${{ runner.arch }}"
 
+      - name: DISABLE SENTRY
+        run: |
+          conan config set user.curaengine:sentry_url=""
+
       # - name: Add runner credentials to cura remote
       #   run: conan user -p ${{ secrets.CONAN_PASS }} -r cura ${{ secrets.CONAN_USER }}
 
