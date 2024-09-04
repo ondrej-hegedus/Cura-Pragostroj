@@ -66,34 +66,35 @@ jobs:
       - name: Checkout Cura repo
         uses: actions/checkout@v4
         with:
-          repository: Ultimaker/Cura
+          # repository: Ultimaker/Cura
+          repository: ondrej-hegedus/Cura-Pragostroj
 
-      - name: Checkout Cura-workflows repo
-        uses: actions/checkout@v4
-        with:
-          repository: Ultimaker/Cura-workflows
-          path: Cura-workflows
+      # - name: Checkout Cura-workflows repo
+      #   uses: actions/checkout@v4
+      #   with:
+      #     repository: Ultimaker/Cura-workflows
+      #     path: Cura-workflows
 
       - name: Setup Python and pip
         uses: actions/setup-python@v5.1.0
         with:
           python-version: 3.11.x
           cache: pip
-          cache-dependency-path: Cura-workflows/.github/workflows/requirements-runner.txt
+          cache-dependency-path: .github/workflows/requirements-runner.txt
 
       - name: Install Python requirements and Create default Conan profile
-        run: pip install -r Cura-workflows/.github/workflows/requirements-runner.txt
+        run: pip install -r .github/workflows/requirements-runner.txt
 
       - name: Install Linux system requirements for building
-        working-directory: Cura-workflows/runner_scripts
+        working-directory: .github/workflows/runner_scripts
         run: |
           chmod +x ubuntu_setup.sh
           sudo ./ubuntu_setup.sh
 
       - name: Install AppImage builder
         run: |
-          chmod +x ./Cura-workflows/runner_scripts/appimage_setup.sh
-          ./Cura-workflows/runner_scripts/appimage_setup.sh
+          chmod +x ./.github/workflows/runner_scripts/appimage_setup.sh
+          ./.github/workflows/runner_scripts/appimage_setup.sh
 
       - name: Setup pipeline caches
         run: mkdir -p /home/runner/.conan/downloads
@@ -103,9 +104,8 @@ jobs:
 
       - name: Get Conan configuration
         run: |
-          conan config install https://github.com/Ultimaker/conan-config.git
-          conan config install https://github.com/Ultimaker/conan-config.git -a "-b runner/${{ runner.os }}/${{ runner.arch }}"
-
+          conan config install ./conan-configs/common/
+          conan config install ./conan-configs/linux-x64/
       # - name: Add runner credentials to cura remote
       #   run: conan user -p ${{ secrets.CONAN_PASS }} -r cura ${{ secrets.CONAN_USER }}
 
@@ -139,10 +139,10 @@ jobs:
 
       - name: Output the name file name and extension
         id: filename
-        run: python Cura-workflows/runner_scripts/cura_installer_filename.py --os ${{ runner.os }} --arch ${{ inputs.architecture }} --enterprise ${{ inputs.enterprise }} --internal ${{ inputs.conan_internal }}
+        run: python .github/workflows/runner_scripts/cura_installer_filename.py --os ${{ runner.os }} --arch ${{ inputs.architecture }} --enterprise ${{ inputs.enterprise }} --internal ${{ inputs.conan_internal }}
 
       - name: Summarize the used dependencies
-        run: python Cura-workflows/runner_scripts/summarize_used_dependencies.py --installer_filename ${{ steps.filename.outputs.INSTALLER_FILENAME }}
+        run: python .github/workflows/runner_scripts/summarize_used_dependencies.py --installer_filename ${{ steps.filename.outputs.INSTALLER_FILENAME }}
 
       - name: Create the Linux AppImage (Bash)
         run: |
