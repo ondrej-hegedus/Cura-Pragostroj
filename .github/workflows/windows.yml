@@ -34,7 +34,8 @@ on:
       operating_system:
         description: 'OS'
         required: true
-        default: 'self-hosted-Windows-X64'
+        # default: 'self-hosted-Windows-X64'
+        default: 'windows-2022'
         type: choice
         options:
           - self-hosted-Windows-X64
