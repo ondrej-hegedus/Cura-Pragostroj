@@ -40,7 +40,6 @@ from cura.Settings.cura_empty_instance_containers import (empty_definition_chang
                                                           empty_material_container, empty_quality_container,
                                                           empty_quality_changes_container, empty_intent_container)
 from cura.UltimakerCloud.UltimakerCloudConstants import META_UM_LINKED_TO_ACCOUNT
-from .ActiveQuality import ActiveQuality
 
 from .CuraStackBuilder import CuraStackBuilder
 
@@ -48,14 +47,16 @@ from UM.i18n import i18nCatalog
 catalog = i18nCatalog("cura")
 from cura.Settings.GlobalStack import GlobalStack
 if TYPE_CHECKING:
-    from PyQt6.QtCore import QVariantList
-
     from cura.CuraApplication import CuraApplication
     from cura.Machines.MaterialNode import MaterialNode
     from cura.Machines.QualityChangesGroup import QualityChangesGroup
     from cura.Machines.QualityGroup import QualityGroup
     from cura.Machines.VariantNode import VariantNode
 
+
+
+import logging
+logger = logging.getLogger(__name__)
 
 class MachineManager(QObject):
     def __init__(self, application: "CuraApplication", parent: Optional["QObject"] = None) -> None:
@@ -161,6 +162,9 @@ class MachineManager(QObject):
     rootMaterialChanged = pyqtSignal()
     numUserSettingsChanged = pyqtSignal()
 
+    # Added by Pragostroj
+    # activeMachineChanged = pyqtSignal()
+
     def _reCalculateNumUserSettings(self):
         if not self._global_container_stack:
             if self._num_user_settings != 0:
@@ -255,6 +259,8 @@ class MachineManager(QObject):
 
     @pyqtProperty("QVariantList", notify = outputDevicesChanged)
     def printerOutputDevices(self) -> List[PrinterOutputDevice]:
+        Logger.debug('------printerOutputDevices:-------')
+        Logger.debug(str(self._printer_output_devices))
         return self._printer_output_devices
 
     @pyqtProperty(int, constant=True)
@@ -341,6 +347,7 @@ class MachineManager(QObject):
 
     @pyqtSlot(str)
     def setActiveMachine(self, stack_id: Optional[str]) -> None:
+        Logger.debug('-----------_SETTING ACTIVE MACHINE_-------------')
         self.blurSettings.emit()  # Ensure no-one has focus.
 
         if not stack_id:
@@ -381,6 +388,9 @@ class MachineManager(QObject):
             extruder_manager.activeExtruderChanged.emit()
 
         self._validateVariantsAndMaterials(global_stack)
+        # self.activeMachineChanged.emit()
+        # self.outputDevicesChanged.emit()
+
 
     def _validateVariantsAndMaterials(self, global_stack) -> None:
         # Validate if the machine has the correct variants and materials.
@@ -582,10 +592,6 @@ class MachineManager(QObject):
     @pyqtProperty(QObject, notify = globalContainerChanged)
     def activeMachine(self) -> Optional["GlobalStack"]:
         return self._global_container_stack
-
-    @pyqtProperty("QVariantList", notify=activeVariantChanged)
-    def activeMachineExtruders(self) -> Optional["QVariantList"]:
-        return self._global_container_stack.extruderList if self._global_container_stack else None
 
     @pyqtProperty(str, notify = activeStackChanged)
     def activeStackId(self) -> str:
@@ -1638,31 +1644,33 @@ class MachineManager(QObject):
     #        Examples:
     #          - "my_profile - Fine" (only based on a default quality, no intent involved)
     #          - "my_profile - Engineering - Fine" (based on an intent)
-    @pyqtProperty("QList<QString>", notify = activeQualityDisplayNameChanged)
-    def activeQualityDisplayNameStringParts(self) -> List[str]:
-        return self.activeQualityDisplayNameMap().getStringParts()
-
-    @pyqtProperty("QList<QString>", notify = activeQualityDisplayNameChanged)
-    def activeQualityDisplayNameMainStringParts(self) -> List[str]:
-        return self.activeQualityDisplayNameMap().getMainStringParts()
-
-    @pyqtProperty("QList<QString>", notify = activeQualityDisplayNameChanged)
-    def activeQualityDisplayNameTailStringParts(self) -> List[str]:
-        return self.activeQualityDisplayNameMap().getTailStringParts()
-
-    def activeQualityDisplayNameMap(self) -> ActiveQuality:
+    @pyqtProperty("QVariantMap", notify = activeQualityDisplayNameChanged)
+    def activeQualityDisplayNameMap(self) -> Dict[str, str]:
         global_stack = self._application.getGlobalContainerStack()
         if global_stack is None:
-            return ActiveQuality()
+            return {"main": "",
+                    "suffix": ""}
 
-        return ActiveQuality(
-            profile = global_stack.quality.getName(),
-            intent_category = self.activeIntentCategory,
-            intent_name = IntentCategoryModel.translation(self.activeIntentCategory, "name", self.activeIntentCategory.title()),
-            custom_profile = self.activeQualityOrQualityChangesName if global_stack.qualityChanges is not empty_quality_changes_container else None,
-            layer_height = self.activeQualityLayerHeight if self.isActiveQualitySupported else None,
-            is_experimental = self.isActiveQualityExperimental and self.isActiveQualitySupported
-        )
+        display_name = global_stack.quality.getName()
+
+        intent_category = self.activeIntentCategory
+        if intent_category != "default":
+            intent_display_name = IntentCategoryModel.translation(intent_category,
+                                                                  "name",
+                                                                  intent_category.title())
+            display_name = "{intent_name} - {the_rest}".format(intent_name = intent_display_name,
+                                                               the_rest = display_name)
+
+        main_part = display_name
+        suffix_part = ""
+
+        # Not a custom quality
+        if global_stack.qualityChanges != empty_quality_changes_container:
+            main_part = self.activeQualityOrQualityChangesName
+            suffix_part = display_name
+
+        return {"main": main_part,
+                "suffix": suffix_part}
 
     @pyqtSlot(str)
     def setIntentByCategory(self, intent_category: str) -> None:
@@ -1705,16 +1713,6 @@ class MachineManager(QObject):
                     break
             else:  # No intent had the correct category.
                 extruder.intent = empty_intent_container
-
-    @pyqtSlot()
-    def resetIntents(self) -> None:
-        """Reset the intent category of the current printer.
-        """
-        global_stack = self._application.getGlobalContainerStack()
-        if global_stack is None:
-            return
-        for extruder in global_stack.extruderList:
-            extruder.intent = empty_intent_container
 
     def activeQualityGroup(self) -> Optional["QualityGroup"]:
         """Get the currently activated quality group.
@@ -1791,9 +1789,7 @@ class MachineManager(QObject):
     @pyqtProperty(bool, notify = activeQualityGroupChanged)
     def hasNotSupportedQuality(self) -> bool:
         global_container_stack = self._application.getGlobalContainerStack()
-        return global_container_stack is not None\
-               and global_container_stack.quality == empty_quality_container \
-               and global_container_stack.qualityChanges == empty_quality_changes_container
+        return (not global_container_stack is None) and global_container_stack.quality == empty_quality_container and global_container_stack.qualityChanges == empty_quality_changes_container
 
     @pyqtProperty(bool, notify = activeQualityGroupChanged)
     def isActiveQualityCustom(self) -> bool:

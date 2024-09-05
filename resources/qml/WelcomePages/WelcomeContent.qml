@@ -1,4 +1,4 @@
-// Copyright (c) 2022 UltiMaker
+// Copyright (c) 2019 Ultimaker B.V.
 // Cura is released under the terms of the LGPLv3 or higher.
 
 import QtQuick 2.10
@@ -9,10 +9,11 @@ import Cura 1.1 as Cura
 
 //
 // This component contains the content for the "Welcome" page of the welcome on-boarding process.
-// This dialog is currently only shown during on-boarding and therefore only shown in English
 //
 Item
 {
+    UM.I18nCatalog { id: catalog; name: "cura" }
+
     // Arrange the items vertically and put everything in the center
     Column
     {
@@ -52,7 +53,7 @@ Item
             id: titleLabel
             anchors.horizontalCenter: parent.horizontalCenter
             horizontalAlignment: Text.AlignHCenter
-            text: "Welcome to UltiMaker Cura"
+            text: catalog.i18nc("@label", "Welcome to Ultimaker Cura")
             color: UM.Theme.getColor("primary_button")
             font: UM.Theme.getFont("huge_bold")
         }
@@ -63,7 +64,7 @@ Item
             anchors.horizontalCenter: parent.horizontalCenter
             horizontalAlignment: Text.AlignHCenter
             width: titleLabel.width + 2 * UM.Theme.getSize("thick_margin").width
-            text: "Please follow these steps to set up UltiMaker Cura. This will only take a few moments."
+            text: catalog.i18nc("@text", "Please follow these steps to set up Ultimaker Cura. This will only take a few moments.")
             font: UM.Theme.getFont("medium")
         }
 
@@ -78,7 +79,7 @@ Item
         {
             id: getStartedButton
             anchors.horizontalCenter: parent.horizontalCenter
-            text: "Get started"
+            text: catalog.i18nc("@button", "Get started")
             onClicked: base.showNextPage()
         }
 

@@ -23,7 +23,6 @@ SettingItem
     {
         id: control
         anchors.fill: parent
-        forceHighlight: base.hovered
 
         model: base.extrudersWithOptionalModel
 

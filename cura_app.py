@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 
+
+
 # Copyright (c) 2022 Ultimaker B.V.
 # Cura is released under the terms of the LGPLv3 or higher.
 
@@ -9,16 +11,17 @@
 # code (e.g. in the user's home directory where AppImages by default run from).
 # See issue CURA-7081.
 import sys
+import logging.config
+
+# sys.argv.pop()
+# sys.argv.append('/home/ondrej/projects/koncern/cura_from_source/cura_5.2/Cura/cura_app.py')
+
 if "" in sys.path:
     sys.path.remove("")
 
 import argparse
 import faulthandler
 import os
-
-# set the environment variable QT_QUICK_FLICKABLE_WHEEL_DECELERATION to 5000 as mentioned in qt6.6 update log to overcome scroll related issues
-os.environ["QT_QUICK_FLICKABLE_WHEEL_DECELERATION"] = str(int(os.environ.get("QT_QUICK_FLICKABLE_WHEEL_DECELERATION", "5000")))
-
 if sys.platform != "linux":  # Turns out the Linux build _does_ use this, but we're not making an Enterprise release for that system anyway.
     os.environ["QT_PLUGIN_PATH"] = ""  # Security workaround: Don't need it, and introduces an attack vector, so set to nul.
     os.environ["QML2_IMPORT_PATH"] = ""  # Security workaround: Don't need it, and introduces an attack vector, so set to nul.
@@ -30,6 +33,56 @@ from UM.Platform import Platform
 from cura import ApplicationMetadata
 from cura.ApplicationMetadata import CuraAppName
 from cura.CrashHandler import CrashHandler
+
+
+LOGGING_CONFIG = {
+    'version': 1,
+    # 'disable_existing_loggers': True,
+    'formatters': {
+        'pragostroj_formatter': {
+            'format': '%(asctime)s [%(levelname)s] %(name)s:pragl %(message)s'
+        },
+    },
+    'handlers': {
+        'console': {
+            # 'level': 'DEBUG',
+            'formatter': 'pragostroj_formatter',
+            'class': 'logging.StreamHandler',
+        },
+        # 'pragostroj_handler': {
+        #     'level': 'DEBUG',
+        #     'formatter': 'pragostroj_formatter',
+        #     'class': 'logging.handlers.RotatingFileHandler',
+        #     'filename': '/home/ondrej/.local/share/cura/pragostroj_plugin_cura5.log',
+        #     'mode': 'a',
+        #     'maxBytes': 52428800, # 50mb
+        #     'backupCount': 1,
+        # },
+    },
+    'loggers': {
+        # '': {
+        #     'handlers': ['console'],
+        #     # 'handlers': ['pragostroj_handler', 'console'],
+        #     'level': 'DEBUG',
+        #     'propagate': True
+        # },
+        # TODO: correct path/logger-name
+        'Pragostroj': {
+            'handlers': ['console'],
+            # 'handlers': ['pragostroj_handler', 'console'],
+            'level': 'DEBUG',
+            'propagate': True
+        },
+        # 'src': {
+        #     'handlers': ['console'],
+        #     # 'handlers': ['pragostroj_handler', 'console'],
+        #     'level': 'DEBUG',
+        #     'propagate': True
+        # },
+    }
+}
+logging.config.dictConfig(LOGGING_CONFIG)
+
 
 try:
     import sentry_sdk
@@ -233,7 +286,7 @@ if Platform.isLinux() and getattr(sys, "frozen", False):
 # even worse, it crashes when switching to the "Preview" pane.
 if Platform.isLinux():
     os.environ["QT_QUICK_CONTROLS_STYLE"] = "default"
-    
+
 if ApplicationMetadata.CuraDebugMode:
     ssl_conf = QSslConfiguration.defaultConfiguration()
     ssl_conf.setPeerVerifyMode(QSslSocket.PeerVerifyMode.VerifyNone)

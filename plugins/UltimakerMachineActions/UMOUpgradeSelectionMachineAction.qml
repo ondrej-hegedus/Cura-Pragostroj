@@ -1,4 +1,4 @@
-// Copyright (c) 2022 UltiMaker
+// Copyright (c) 2019 Ultimaker B.V.
 // Cura is released under the terms of the LGPLv3 or higher.
 
 import QtQuick 2.10
@@ -27,7 +27,7 @@ Cura.MachineAction
             anchors.topMargin: UM.Theme.getSize("default_margin").height
             width: parent.width
             wrapMode: Text.WordWrap
-            text: catalog.i18nc("@label","Please select any upgrades made to this UltiMaker Original")
+            text: catalog.i18nc("@label","Please select any upgrades made to this Ultimaker Original")
             font: UM.Theme.getFont("medium")
         }
 

@@ -303,17 +303,18 @@ Item
 
                     Component.onCompleted:
                     {
-                        updateModel();
+                        update()
                     }
 
-                    function updateModel()
+                    function update()
                     {
-                        clear();
-                        for (var i = 1; i <= Cura.MachineManager.activeMachine.maxExtruderCount; i ++) {
+                        clear()
+                        for (var i = 1; i <= Cura.MachineManager.activeMachine.maxExtruderCount; i++)
+                        {
                             // Use String as value. JavaScript only has Number. PropertyProvider.setPropertyValue()
                             // takes a QVariant as value, and Number gets translated into a float. This will cause problem
                             // for integer settings such as "Number of Extruders".
-                            append({ text: String(i), value: String(i) });
+                            append({ text: String(i), value: String(i) })
                         }
                     }
                 }
@@ -321,9 +322,7 @@ Item
                 Connections
                 {
                     target: Cura.MachineManager
-                    function onGlobalContainerChanged() {
-                        extruderCountModel.updateModel();
-                    }
+                    function onGlobalContainerChanged() { extruderCountModel.update() }
                 }
             }
 

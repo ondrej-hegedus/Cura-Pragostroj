@@ -1,4 +1,4 @@
-// Copyright (c) 2023 UltiMaker
+// Copyright (c) 2022 Ultimaker B.V.
 // Cura is released under the terms of the LGPLv3 or higher.
 
 import QtQuick 2.15
@@ -17,9 +17,11 @@ Item
     id: base
 
     // The currently selected machine item in the local machine list.
-    property var currentItem: machineList.currentIndex >= 0 ? machineList.model.getItem(machineList.currentIndex) : null
+    property var currentItem: (machineList.currentIndex >= 0)
+                              ? machineList.model.getItem(machineList.currentIndex)
+                              : null
     // The currently active (expanded) section/category, where section/category is the grouping of local machine items.
-    property var currentSections: new Set()
+    property string currentSection: "Ultimaker B.V."
     // By default (when this list shows up) we always expand the "Ultimaker" section.
     property var preferredCategories: {
         "Ultimaker B.V.": -2,
@@ -35,16 +37,16 @@ Item
         printerName = currentItem == null ? "" : currentItem.name
     }
 
-    function updateCurrentItemUponSectionChange(section)
+    function updateCurrentItemUponSectionChange()
     {
         // Find the first machine from this section
-        for (var i = 0; i < machineList.count; i ++)
+        for (var i = 0; i < machineList.count; i++)
         {
-            const item = machineList.model.getItem(i);
-            if (item.section == section)
+            var item = machineList.model.getItem(i)
+            if (item.section == base.currentSection)
             {
-                machineList.currentIndex = i;
-                break;
+                machineList.currentIndex = i
+                break
             }
         }
     }
@@ -66,11 +68,7 @@ Item
 
     Component.onCompleted:
     {
-        const initialSection = "Ultimaker B.V.";
-        base.currentSections.add(initialSection);
-        updateCurrentItemUponSectionChange(initialSection);
-        // Trigger update on base.currentSections
-        base.currentSections = base.currentSections;
+        updateCurrentItemUponSectionChange()
     }
 
     Row
@@ -104,7 +102,7 @@ Item
                 height: UM.Theme.getSize("action_button").height
                 text: section
 
-                property bool isActive: base.currentSections.has(section)
+                property bool isActive: base.currentSection == section
 
                 background: Rectangle
                 {
@@ -124,7 +122,7 @@ Item
                         width: UM.Theme.getSize("standard_arrow").width
                         height: UM.Theme.getSize("standard_arrow").height
                         color: UM.Theme.getColor("text")
-                        source: isActive ? UM.Theme.getIcon("ChevronSingleDown") : UM.Theme.getIcon("ChevronSingleRight")
+                        source: base.currentSection == section ? UM.Theme.getIcon("ChevronSingleDown") : UM.Theme.getIcon("ChevronSingleRight")
                     }
 
                     UM.Label
@@ -139,17 +137,8 @@ Item
 
                 onClicked:
                 {
-                    if (base.currentSections.has(section))
-                    {
-                        base.currentSections.delete(section);
-                    }
-                    else
-                    {
-                        base.currentSections.add(section);
-                        base.updateCurrentItemUponSectionChange(section);
-                    }
-                    // Trigger update on base.currentSections
-                    base.currentSections = base.currentSections;
+                    base.currentSection = section
+                    base.updateCurrentItemUponSectionChange()
                 }
             }
 
@@ -168,7 +157,7 @@ Item
 
                 checked: machineList.currentIndex == index
                 text: name
-                visible: base.currentSections.has(section)
+                visible: base.currentSection.toLowerCase() === section.toLowerCase()
                 onClicked: machineList.currentIndex = index
             }
         }

@@ -1,4 +1,4 @@
-// Copyright (c) 2022 UltiMaker
+// Copyright (c) 2019 Ultimaker B.V.
 // Cura is released under the terms of the LGPLv3 or higher.
 
 import QtQuick 2.10
@@ -61,7 +61,7 @@ Item
                 id: titleLabel
                 anchors.horizontalCenter: parent.horizontalCenter
                 horizontalAlignment: Text.AlignHCenter
-                text: catalog.i18nc("@label", "Sign in to the UltiMaker platform")
+                text: catalog.i18nc("@label", "Sign in to the Ultimaker platform")
                 color: UM.Theme.getColor("primary_button")
                 font: UM.Theme.getFont("huge")
             }
@@ -172,7 +172,7 @@ Item
                         id: communityTextLabel
                         anchors.horizontalCenter: communityColumn.horizontalCenter
                         width: parent.width
-                        text: catalog.i18nc("@text", "Share ideas and get help from 48,000+ users in the UltiMaker Community")
+                        text: catalog.i18nc("@text", "Share ideas and get help from 48,000+ users in the Ultimaker Community")
                         horizontalAlignment: Text.AlignHCenter
                     }
                 }
@@ -198,7 +198,7 @@ Item
         anchors.rightMargin: UM.Theme.getSize("default_margin").width
         anchors.bottom: parent.bottom
 
-        text: catalog.i18nc("@text", "Create a free UltiMaker Account")
+        text: catalog.i18nc("@text", "Create a free Ultimaker Account")
         onClicked:  Qt.openUrlExternally("https://ultimaker.com/app/ultimaker-cura-account-sign-up?utm_source=cura&utm_medium=software&utm_campaign=onboarding-signup")
     }
 

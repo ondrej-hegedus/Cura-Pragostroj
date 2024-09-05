@@ -17,12 +17,6 @@ UM.MainWindow
 {
     id: base
 
-    Item
-    {
-        id: mainWindow
-        anchors.fill: parent
-    }
-
     // Cura application window title
     title:
     {
@@ -502,7 +496,10 @@ UM.MainWindow
         target: Cura.Actions.addProfile
         function onTriggered()
         {
-            createNewQualityDialog.visible = true;
+            preferences.show();
+            preferences.setPage(4);
+            // Create a new profile after a very short delay so the preference page has time to initiate
+            createProfileTimer.start();
         }
     }
 
@@ -548,6 +545,15 @@ UM.MainWindow
                 preferences.getCurrentItem().scrollToSection(source.key);
             }
         }
+    }
+
+    Timer
+    {
+        id: createProfileTimer
+        repeat: false
+        interval: 1
+
+        onTriggered: preferences.getCurrentItem().createProfile()
     }
 
     // BlurSettings is a way to force the focus away from any of the setting items.
@@ -628,7 +634,7 @@ UM.MainWindow
         //: File open dialog title
         title: catalog.i18nc("@title:window","Open file(s)")
         modality: Qt.WindowModal
-        fileMode: FileDialog.FileMode.OpenFiles
+        fileMode: FileDialog.OpenFiles
         nameFilters: UM.MeshFileHandler.supportedReadFileTypes;
         currentFolder: CuraApplication.getDefaultPath("dialog_load_path")
         onAccepted:
@@ -701,33 +707,24 @@ UM.MainWindow
 
             if (hasProjectFile)
             {
-                var projectFile = projectFileUrlList[0]
-                var is_ucp = CuraApplication.isProjectUcp(projectFile);
-                if (is_ucp)
+                var projectFile = projectFileUrlList[0];
+
+                // check preference
+                var choice = UM.Preferences.getValue("cura/choice_on_open_project");
+                if (choice == "open_as_project")
                 {
-                    askOpenAsProjectOrUcpOrImportModelsDialog.fileUrl = projectFile;
-                    askOpenAsProjectOrUcpOrImportModelsDialog.addToRecent = true;
-                    askOpenAsProjectOrUcpOrImportModelsDialog.show();
+                    openFilesIncludingProjectsDialog.loadProjectFile(projectFile);
                 }
-                else
+                else if (choice == "open_as_model")
                 {
-                    // check preference
-                    var choice = UM.Preferences.getValue("cura/choice_on_open_project");
-                    if (choice == "open_as_project")
-                    {
-                        openFilesIncludingProjectsDialog.loadProjectFile(projectFile);
-                    }
-                    else if (choice == "open_as_model")
-                    {
-                        openFilesIncludingProjectsDialog.loadModelFiles([projectFile].slice());
-                    }
-                    else    // always ask
-                    {
-                        // ask whether to open as project or as models
-                        askOpenAsProjectOrModelsDialog.fileUrl = projectFile;
-                        askOpenAsProjectOrModelsDialog.addToRecent = true;
-                        askOpenAsProjectOrModelsDialog.show();
-                    }
+                    openFilesIncludingProjectsDialog.loadModelFiles([projectFile].slice());
+                }
+                else    // always ask
+                {
+                    // ask whether to open as project or as models
+                    askOpenAsProjectOrModelsDialog.fileUrl = projectFile;
+                    askOpenAsProjectOrModelsDialog.addToRecent = true;
+                    askOpenAsProjectOrModelsDialog.show();
                 }
             }
             else
@@ -778,30 +775,14 @@ UM.MainWindow
         id: askOpenAsProjectOrModelsDialog
     }
 
-    AskOpenAsProjectOrUcpOrImportModel
-    {
-        id: askOpenAsProjectOrUcpOrImportModelsDialog
-    }
-
     Connections
     {
         target: CuraApplication
         function onOpenProjectFile(project_file, add_to_recent_files)
         {
-            var is_ucp = CuraApplication.isProjectUcp(project_file);
-            if (is_ucp)
-            {
-
-                askOpenAsProjectOrUcpOrImportModelsDialog.fileUrl = project_file;
-                askOpenAsProjectOrUcpOrImportModelsDialog.addToRecent = add_to_recent_files;
-                askOpenAsProjectOrUcpOrImportModelsDialog.show();
-            }
-            else
-            {
-                askOpenAsProjectOrModelsDialog.fileUrl = project_file;
-                askOpenAsProjectOrModelsDialog.addToRecent = add_to_recent_files;
-                askOpenAsProjectOrModelsDialog.show();
-            }
+            askOpenAsProjectOrModelsDialog.fileUrl = project_file;
+            askOpenAsProjectOrModelsDialog.addToRecent = add_to_recent_files;
+            askOpenAsProjectOrModelsDialog.show();
         }
     }
 
@@ -835,38 +816,19 @@ UM.MainWindow
     Connections
     {
         target: CuraApplication
-        function onShowCompareAndSaveProfileChanges(profileState)
-        {
-            discardOrKeepProfileChangesDialogLoader.sourceComponent = discardOrKeepProfileChangesDialogComponent
-            discardOrKeepProfileChangesDialogLoader.item.buttonState = profileState
-            discardOrKeepProfileChangesDialogLoader.item.show()
-        }
         function onShowDiscardOrKeepProfileChanges()
         {
-            onShowCompareAndSaveProfileChanges(DiscardOrKeepProfileChangesDialog.ButtonsType.DiscardOrKeep)
+            discardOrKeepProfileChangesDialogLoader.sourceComponent = discardOrKeepProfileChangesDialogComponent
+            discardOrKeepProfileChangesDialogLoader.item.show()
         }
     }
 
-    property var wizardDialog
-    Component
+    Cura.WizardDialog
     {
-        id: addMachineDialogLoader
-
-        Cura.WizardDialog
-        {
-            title: catalog.i18nc("@title:window", "Add Printer")
-            maximumWidth: Screen.width * 2
-            maximumHeight: Screen.height * 2
-            model: CuraApplication.getAddPrinterPagesModel()
-            progressBarVisible: false
-            onVisibleChanged:
-            {
-                if(!visible)
-                {
-                    wizardDialog = null
-                }
-            }
-        }
+        id: addMachineDialog
+        title: catalog.i18nc("@title:window", "Add Printer")
+        model: CuraApplication.getAddPrinterPagesModel()
+        progressBarVisible: false
     }
 
     Cura.WizardDialog
@@ -891,8 +853,9 @@ UM.MainWindow
         target: Cura.Actions.addMachine
         function onTriggered()
         {
-            wizardDialog = addMachineDialogLoader.createObject()
-            wizardDialog.show()
+            // Make sure to show from the first page when the dialog shows up.
+            addMachineDialog.resetModelState()
+            addMachineDialog.show()
         }
     }
 
@@ -920,49 +883,6 @@ UM.MainWindow
                 base.visible = true
             }
         }
-    }
-
-    Cura.RenameDialog
-    {
-        id: createNewQualityDialog
-        title: catalog.i18nc("@title:window", "Save Custom Profile")
-        objectPlaceholder: catalog.i18nc("@textfield:placeholder", "New Custom Profile")
-        explanation: catalog.i18nc("@info", "Custom profile name:")
-        extraInfo:
-        [
-            UM.ColorImage
-            {
-                width: UM.Theme.getSize("message_type_icon").width
-                height: UM.Theme.getSize("message_type_icon").height
-                source: UM.Theme.getIcon("Information")
-                color: UM.Theme.getColor("text")
-            },
-            Column
-            {
-                UM.Label
-                {
-                    text: catalog.i18nc
-                    (
-                        "@label %i will be replaced with a profile name",
-                        "<b>Only user changed settings will be saved in the custom profile.</b><br/>" +
-                        "For materials that support it, the new custom profile will inherit properties from <b>%1</b>."
-                    ).arg(Cura.MachineManager.activeQualityOrQualityChangesName)
-                    wrapMode: Text.WordWrap
-                    width: parent.parent.width - 2 * UM.Theme.getSize("message_type_icon").width
-                }
-                Cura.TertiaryButton
-                {
-                    text: catalog.i18nc("@action:button", "Learn more about Cura print profiles")
-                    iconSource: UM.Theme.getIcon("LinkExternal")
-                    isIconOnRightSide: true
-                    leftPadding: 0
-                    rightPadding: 0
-                    onClicked: Qt.openUrlExternally("https://support.ultimaker.com/s/article/1667337576882")
-                }
-            }
-        ]
-        okButtonText: catalog.i18nc("@button", "Save new profile")
-        onAccepted: CuraApplication.getQualityManagementModel().createQualityChanges(newName, true);
     }
 
     /**

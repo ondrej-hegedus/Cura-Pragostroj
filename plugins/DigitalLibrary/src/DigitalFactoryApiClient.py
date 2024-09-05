@@ -3,6 +3,7 @@
 
 import json
 from json import JSONDecodeError
+import re
 from time import time
 from typing import List, Any, Optional, Union, Type, Tuple, Dict, cast, TypeVar, Callable
 
@@ -312,7 +313,7 @@ class DigitalFactoryApiClient:
                        error_callback = on_error,
                        timeout = self.DEFAULT_REQUEST_TIMEOUT)
 
-    def requestUploadMeshFile(self, request: DFPrintJobUploadRequest,
+    def requestUploadUFP(self, request: DFPrintJobUploadRequest,
                          on_finished: Callable[[DFPrintJobUploadResponse], Any],
                          on_error: Optional[Callable[["QNetworkReply", "QNetworkReply.NetworkError"], None]] = None) -> None:
         """Requests the Digital Factory to register the upload of a file in a library project.

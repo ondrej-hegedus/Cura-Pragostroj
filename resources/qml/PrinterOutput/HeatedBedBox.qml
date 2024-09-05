@@ -32,7 +32,7 @@ Item
         UM.Label
         {
             id: bedTargetTemperature
-            text: printerModel != null ? Math.round(printerModel.targetBedTemperature) + "°C" : ""
+            text: printerModel != null ? printerModel.targetBedTemperature + "°C" : ""
             font: UM.Theme.getFont("default_bold")
             color: UM.Theme.getColor("text_inactive")
             anchors.right: parent.right
@@ -66,7 +66,7 @@ Item
         UM.Label
         {
             id: bedCurrentTemperature
-            text: printerModel != null ? Math.round(printerModel.bedTemperature) + "°C" : ""
+            text: printerModel != null ? printerModel.bedTemperature + "°C" : ""
             font: UM.Theme.getFont("large_bold")
             anchors.right: bedTargetTemperature.left
             anchors.top: parent.top
@@ -199,7 +199,17 @@ Item
                     {
                         return "";
                     }
-                    return bedTemperature.properties.value;
+                    if ((bedTemperature.resolve != "None" && bedTemperature.resolve) && (bedTemperature.stackLevels[0] != 0) && (bedTemperature.stackLevels[0] != 1))
+                    {
+                        // We have a resolve function. Indicates that the setting is not settable per extruder and that
+                        // we have to choose between the resolved value (default) and the global value
+                        // (if user has explicitly set this).
+                        return bedTemperature.resolve;
+                    }
+                    else
+                    {
+                        return bedTemperature.properties.value;
+                    }
                 }
             }
         }

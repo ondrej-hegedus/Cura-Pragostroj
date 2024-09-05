@@ -1,0 +1,8 @@
+{
+    "name": "Pragostroj Network Connection",
+    "author": "Pragostroj B.V.",
+    "description": "Manages network connections to Pragostroj networked printers.",
+    "version": "2.0.1",
+    "api": "8.2.0",
+    "i18n-catalog": "cura"
+}

@@ -21,7 +21,7 @@ class UFPReader(MeshReader):
         MimeTypeDatabase.addMimeType(
             MimeType(
                 name = "application/x-ufp",
-                comment = "UltiMaker Format Package",
+                comment = "Ultimaker Format Package",
                 suffixes = ["ufp"]
             )
         )

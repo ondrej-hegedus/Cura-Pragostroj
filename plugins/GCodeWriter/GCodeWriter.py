@@ -11,6 +11,7 @@ from UM.Settings.InstanceContainer import InstanceContainer
 from cura.Machines.ContainerTree import ContainerTree
 
 from UM.i18n import i18nCatalog
+from cura.Settings.CuraStackBuilder import CuraStackBuilder
 
 catalog = i18nCatalog("cura")
 

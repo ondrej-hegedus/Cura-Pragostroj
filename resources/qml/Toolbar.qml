@@ -5,7 +5,7 @@ import QtQuick 2.2
 import QtQuick.Controls 2.3
 
 import UM 1.5 as UM
-import Cura 1.7 as Cura
+import Cura 1.0 as Cura
 
 Item
 {
@@ -29,13 +29,13 @@ Item
             anchors
             {
                 fill: toolButtons
-                leftMargin: -radius - border.width // Removes border on left side
+                leftMargin: -radius - border.width
+                rightMargin: -border.width
+                topMargin: -border.width
+                bottomMargin: -border.width
             }
             radius: UM.Theme.getSize("default_radius").width
-            color: UM.Theme.getColor("toolbar_background")
-            border.color: UM.Theme.getColor("lining")
-            border.width: UM.Theme.getSize("default_lining").width
-
+            color: UM.Theme.getColor("lining")
         }
 
         Column
@@ -111,12 +111,13 @@ Item
             anchors
             {
                 fill: extruderButtons
-                leftMargin: -radius - border.width // Removes border on left side
+                leftMargin: -radius - border.width
+                rightMargin: -border.width
+                topMargin: -border.width
+                bottomMargin: -border.width
             }
             radius: UM.Theme.getSize("default_radius").width
-            color: UM.Theme.getColor("toolbar_background")
-            border.color: UM.Theme.getColor("lining")
-            border.width: UM.Theme.getSize("default_lining").width
+            color: UM.Theme.getColor("lining")
             visible: extrudersModel.items.length > 1
         }
 
@@ -134,21 +135,11 @@ Item
                 height: childrenRect.height
                 model: extrudersModel.items.length > 1 ? extrudersModel : 0
 
-                delegate: Cura.ExtruderButton
+                delegate: ExtruderButton
                 {
                     extruder: model
-                    isTopElement: extrudersModel.getItem(0).id === model.id
-                    isBottomElement: extrudersModel.getItem(extrudersModel.rowCount() - 1).id === model.id
-                    text: catalog.i18ncp("@label %1 is filled in with the name of an extruder", "Print Selected Model with %1", "Print Selected Models with %1", UM.Selection.selectionCount).arg(extruder.name)
-                    checked: Cura.ExtruderManager.selectedObjectExtruders.indexOf(extruder.id) !== -1
-                    enabled: UM.Selection.hasSelection && extruder.stack.isEnabled
-                    font: UM.Theme.getFont("small_emphasis")
-
-                    onClicked:
-                    {
-                        forceActiveFocus() //First grab focus, so all the text fields are updated
-                        CuraActions.setExtruderForSelection(extruder.id)
-                    }
+                    isTopElement: extrudersModel.getItem(0).id == model.id
+                    isBottomElement: extrudersModel.getItem(extrudersModel.rowCount() - 1).id == model.id
                 }
             }
         }
@@ -203,7 +194,7 @@ Item
             x: UM.Theme.getSize("default_margin").width
             y: UM.Theme.getSize("default_margin").height
 
-            source: UM.Controller.valid ? UM.Controller.activeToolPanel : ""
+            source: UM.ActiveTool.valid ? UM.ActiveTool.activeToolPanel : ""
             enabled: UM.Controller.toolsEnabled
         }
     }
@@ -222,7 +213,7 @@ Item
         UM.Label
         {
             id: toolHint
-            text: UM.Controller.properties.getValue("ToolHint") != undefined ? UM.Controller.properties.getValue("ToolHint") : ""
+            text: UM.ActiveTool.properties.getValue("ToolHint") != undefined ? UM.ActiveTool.properties.getValue("ToolHint") : ""
             color: UM.Theme.getColor("tooltip_text")
             anchors.horizontalCenter: parent.horizontalCenter
         }

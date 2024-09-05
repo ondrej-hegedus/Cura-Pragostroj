@@ -7,12 +7,16 @@ import UM 1.3 as UM
 
 /**
  * The MonitorPrinterConfiguration accepts 2 configuration objects as input and
- * applies them to two instances of MonitorExtruderConfiguration.
- * It's used in both the MonitorPrintJobCard component as well as the MonitorPrinterCard component.
+ * applies them to a MonitorBuildplateConfiguration instance and two instances
+ * of MonitorExtruderConfiguration. It's used in both the MonitorPrintJobCard
+ * component as well as the MonitorPrinterCard component.
  */
 Item
 {
     id: base
+
+    // Extracted buildplate configuration
+    property alias buildplate: buildplateConfig.buildplate
 
     // Array of extracted extruder configurations
     property var configurations: [null,null]
@@ -43,5 +47,12 @@ Item
             }
 
         }
+    }
+
+    MonitorBuildplateConfiguration
+    {
+        id: buildplateConfig
+        anchors.bottom: parent.bottom
+        buildplate: null
     }
 }
