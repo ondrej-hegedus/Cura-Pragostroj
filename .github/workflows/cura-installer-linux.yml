@@ -149,6 +149,14 @@ jobs:
           python ../cura_inst/packaging/AppImage-builder/create_appimage.py ./UltiMaker-Cura $CURA_VERSION_FULL "${{ steps.filename.outputs.INSTALLER_FILENAME }}.AppImage"
           chmod +x "${{ steps.filename.outputs.INSTALLER_FILENAME }}.AppImage"
         working-directory: dist
+        
+      - name: LS CWD
+        run: ls -a
+      - name: TREE CWD
+        run: tree -L 3 .
+      - name: TREE CWD
+        run: tree -L 3 cura_inst
+      
 
       # - name: Upload the lib(std)c(++) debug symbols
       #   run: |
