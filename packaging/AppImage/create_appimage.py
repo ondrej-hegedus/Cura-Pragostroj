@@ -20,9 +20,9 @@ def build_appimage(dist_path, version, appimage_filename):
     except FileNotFoundError:
         pass  # If it didn't exist, that's even better.
 
-    generate_appimage(dist_path, appimage_filename)
+    # generate_appimage(dist_path, appimage_filename)
 
-    sign_appimage(dist_path, appimage_filename)
+    # sign_appimage(dist_path, appimage_filename)
 
 def copy_metadata_files(dist_path, version):
     """
