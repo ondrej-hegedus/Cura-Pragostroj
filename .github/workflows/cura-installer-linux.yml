@@ -184,6 +184,9 @@ jobs:
       # - name: Summarize the used dependencies
       #   run: python .github/workflows/runner_scripts/summarize_used_dependencies.py --installer_filename ${{ steps.filename.outputs.INSTALLER_FILENAME }}
 
+      - name: TREE dist
+        run: tree -L 4 dist
+        
       - name: Create the Linux AppImage (Bash)
         run: |
           python ../cura_inst/packaging/AppImage/create_appimage.py ./UltiMaker-Cura $CURA_VERSION_FULL "${{ steps.filename.outputs.INSTALLER_FILENAME }}.AppImage"
