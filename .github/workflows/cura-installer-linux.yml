@@ -82,7 +82,10 @@ jobs:
           cache: pip
           cache-dependency-path: .github/workflows/requirements-runner.txt
 
-      - name: Install Python requirements and Create default Conan profile
+      -   name: Install Python requirements for - create
+          run: pip install -r .github/workflows/requirements-conan-package.txt
+
+      - name: Install Python requirements for - install
         run: pip install -r .github/workflows/requirements-runner.txt
 
       - name: Install Linux system requirements for building
@@ -90,6 +93,20 @@ jobs:
         run: |
           chmod +x ubuntu_setup.sh
           sudo ./ubuntu_setup.sh
+
+      - name: Install Linux system requirements for - create
+        run: |
+            sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y
+            sudo apt update
+            sudo apt upgrade
+            sudo apt install build-essential checkinstall libegl-dev zlib1g-dev libssl-dev ninja-build autoconf libx11-dev libx11-xcb-dev libfontenc-dev libice-dev libsm-dev libxau-dev libxaw7-dev libxcomposite-dev libxcursor-dev libxdamage-dev libxdmcp-dev libxext-dev libxfixes-dev libxi-dev libxinerama-dev libxkbfile-dev libxmu-dev libxmuu-dev libxpm-dev libxrandr-dev libxrender-dev libxres-dev libxss-dev libxt-dev libxtst-dev libxv-dev libxvmc-dev libxxf86vm-dev xtrans-dev libxcb-render0-dev libxcb-render-util0-dev libxcb-xkb-dev libxcb-icccm4-dev libxcb-image0-dev libxcb-keysyms1-dev libxcb-randr0-dev libxcb-shape0-dev libxcb-sync-dev libxcb-xfixes0-dev libxcb-xinerama0-dev xkb-data libxcb-dri3-dev uuid-dev libxcb-util-dev libxkbcommon-x11-dev pkg-config -y
+
+      -   name: Install GCC-12 on ubuntu-22.04
+          if: ${{ startsWith(inputs.runs_on, 'ubuntu-22.04') }}
+          run: |
+              sudo apt install g++-12 gcc-12 -y
+              sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-12 12
+              sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-12 12
 
       - name: Install AppImage builder
         run: |
@@ -132,6 +149,10 @@ jobs:
       - name: Create the Packages (Bash)
         # run: conan install $CURA_CONAN_VERSION ${{ inputs.conan_args }} --build=missing --update -if cura_inst -g VirtualPythonEnv -o cura:enterprise=$ENTERPRISE -o cura:staging=$STAGING  -o cura:internal=False -c tools.build:skip_test=True -s curaengine:build_type=RelWithDebInfo -s arcus:build_type=RelWithDebInfo -s clipper:build_type=RelWithDebInfo
         run: conan install . ${{ inputs.conan_args }} --build=missing --update -if cura_inst -g VirtualPythonEnv -o cura:enterprise=$ENTERPRISE -o cura:staging=$STAGING  -o cura:internal=False -c tools.build:skip_test=True -s curaengine:build_type=RelWithDebInfo -s arcus:build_type=RelWithDebInfo -s clipper:build_type=RelWithDebInfo
+
+      -   name: Create the Packages (from source)
+          if: ${{ inputs.create_from_source }}
+          run: conan create . $CURA_CONAN_VERSION --build=missing --update
 
       - name: Set Environment variables for Cura (bash)
         run: |
