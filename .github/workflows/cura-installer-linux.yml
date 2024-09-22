@@ -187,11 +187,20 @@ jobs:
       - name: TREE dist
         run: tree -L 4 dist
         
-      - name: Create the Linux AppImage (Bash)
+      - name: Create the Linux AppImage (python)
         run: |
           python ../cura_inst/packaging/AppImage/create_appimage.py ./Ultimaker-Cura $CURA_VERSION_FULL "${{ steps.filename.outputs.INSTALLER_FILENAME }}.AppImage"
           chmod +x "${{ steps.filename.outputs.INSTALLER_FILENAME }}.AppImage"
         working-directory: dist
+
+      - name: Create the Linux AppImage (Bash)
+        run: |
+          /home/runner/work/Cura-Pragostroj/Cura-Pragostroj/appimagetool --appimage-extract-and-run ./Ultimaker-Cura "${{ steps.filename.outputs.INSTALLER_FILENAME }}.AppImage"
+          # python ../cura_inst/packaging/AppImage/create_appimage.py ./Ultimaker-Cura $CURA_VERSION_FULL "${{ steps.filename.outputs.INSTALLER_FILENAME }}.AppImage"
+          chmod +x "${{ steps.filename.outputs.INSTALLER_FILENAME }}.AppImage"
+        working-directory: dist
+
+        
         
       - name: LS CWD
         run: ls -a
@@ -225,26 +234,26 @@ jobs:
             dist/${{ steps.filename.outputs.INSTALLER_FILENAME }}.AppImage
           retention-days: 5
 
-      - name: Upload the asc
-        uses: actions/upload-artifact@v4.3.3
-        with:
-          name: ${{ steps.filename.outputs.INSTALLER_FILENAME }}-asc
-          path: |
-            dist/${{ steps.filename.outputs.INSTALLER_FILENAME }}.AppImage.asc
-          retention-days: 5
+      # - name: Upload the asc
+      #   uses: actions/upload-artifact@v4.3.3
+      #   with:
+      #     name: ${{ steps.filename.outputs.INSTALLER_FILENAME }}-asc
+      #     path: |
+      #       dist/${{ steps.filename.outputs.INSTALLER_FILENAME }}.AppImage.asc
+      #     retention-days: 5
 
-      - name: Write the run info
-        shell: python
-        run: |
-          import os
-          with open("run_info.sh", "w") as f:
-              f.writelines(f'echo "CURA_VERSION_FULL={os.environ["CURA_VERSION_FULL"]}" >> $GITHUB_ENV\n')
+      # - name: Write the run info
+      #   shell: python
+      #   run: |
+      #     import os
+      #     with open("run_info.sh", "w") as f:
+      #         f.writelines(f'echo "CURA_VERSION_FULL={os.environ["CURA_VERSION_FULL"]}" >> $GITHUB_ENV\n')
 
-      - name: Upload the run info
-        uses: actions/upload-artifact@v4.3.3
-        with:
-          name: linux-run-info
-          path: |
-            run_info.sh
-          retention-days: 5
+      # - name: Upload the run info
+      #   uses: actions/upload-artifact@v4.3.3
+      #   with:
+      #     name: linux-run-info
+      #     path: |
+      #       run_info.sh
+      #     retention-days: 5
 
