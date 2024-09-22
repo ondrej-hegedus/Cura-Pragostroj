@@ -171,7 +171,7 @@ jobs:
 
       - name: Set Environment variables for Cura (bash)
         run: |
-          . ./cura_inst/bin/activate_github_actions_env.sh
+          #. ./cura_inst/bin/activate_github_actions_env.sh
           . ./cura_inst/bin/activate_github_actions_version_env.sh
 
       - name: Create the Cura dist
