@@ -190,7 +190,7 @@ jobs:
       - name: Create the Linux AppImage (python)
         run: |
           python ../cura_inst/packaging/AppImage/create_appimage.py ./Ultimaker-Cura $CURA_VERSION_FULL "${{ steps.filename.outputs.INSTALLER_FILENAME }}.AppImage"
-          chmod +x "${{ steps.filename.outputs.INSTALLER_FILENAME }}.AppImage"
+          # chmod +x "${{ steps.filename.outputs.INSTALLER_FILENAME }}.AppImage"
         working-directory: dist
 
       - name: Create the Linux AppImage (Bash)
