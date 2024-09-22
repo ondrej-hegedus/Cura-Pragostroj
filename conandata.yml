@@ -12,14 +12,19 @@
 # Subject to change in the future!
 "5.2.1":
     requirements:
-        - "pyarcus/5.2.0"
-        - "curaengine/5.2.1"
-        - "pysavitar/5.2.0"
-        - "pynest2d/5.2.0"
-        - "uranium/5.2.0"
-        - "fdm_materials/5.2.0"
-        - "cura_binary_data/5.2.1"
+        - "pyarcus/5.2.0@ultimaker/testing"
+        - "curaengine/5.2.1-beta.1+0@ultimaker/stable"
+        - "pysavitar/5.2.0-beta.2+1@ultimaker/stable"
+        - "pynest2d/5.2.0-beta.2+0@ultimaker/stable"
+        - "uranium/5.2.0-beta+1@ultimaker/stable"
+        - "fdm_materials/5.2.0-beta.2+1@ultimaker/stable"
+        - "cura_binary_data/5.2.1-beta.1+0@ultimaker/stable"
         - "cpython/3.10.4"
+        # Added to solve conflicts in dependencies
+        - "arcus/5.2.0-beta.2+3@ultimaker/stable"
+        - "sipbuildtool/0.2.4@ultimaker/stable"
+        - "boost/1.82.0"
+
     internal_requirements:
         - "fdm_materials_private/(latest)@ultimaker/testing"
         - "cura_private_data/(latest)@ultimaker/testing"
