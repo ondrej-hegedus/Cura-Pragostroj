@@ -39,7 +39,8 @@ on:
         default: 'ubuntu-22.04'
         type: choice
         options:
-          - ubuntu-22.04
+          - ubuntu-20.04
+          # - ubuntu-22.04
 
 jobs:
   linux-installer:
