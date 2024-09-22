@@ -6,7 +6,8 @@ on:
     inputs:
       cura_conan_version:
         description: 'Cura Conan Version'
-        default: 'cura/latest@ultimaker/testing'
+        # default: 'cura/latest@ultimaker/testing'
+        default: 'pragostroj-cura/5.2.1'
         required: true
         type: string
       conan_args:
