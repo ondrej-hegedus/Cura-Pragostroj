@@ -82,8 +82,11 @@ jobs:
           cache: pip
           cache-dependency-path: .github\workflows\requirements-runner.txt
 
-      - name: Install Python requirements and Create default Conan profile
-        run: pip install -r .github\workflows\requirements-runner.txt
+      - name: Install Python requirements for - create
+        run: pip install -r .github/workflows/requirements-conan-package.txt
+
+      - name: Install Python requirements for - install
+        run: pip install -r .github/workflows/requirements-runner.txt
 
       - name: Create default Conan profile
         run: conan profile new default --detect --force
@@ -109,8 +112,11 @@ jobs:
       #     conan config install https://github.com/Ultimaker/conan-config.git -a "-b runner/internal"
       #     conan user -p ${{ secrets.CONAN_PASS }} -r cura-private ${{ secrets.CONAN_USER }}
 
+      - name: Create the Packages (create)
+        run: conan create . $CURA_CONAN_VERSION --build=missing --update
+
       - name: Create the Packages (Powershell)
-        run: conan install $Env:CURA_CONAN_VERSION ${{ inputs.conan_args }} --build=missing --update -if cura_inst -g VirtualPythonEnv -o cura:enterprise="$Env:ENTERPRISE" -o cura:staging="$Env:STAGING" -o cura:internal=${{ inputs.conan_internal }} -c tools.build:skip_test=True -s curaengine:build_type=RelWithDebInfo -s arcus:build_type=RelWithDebInfo -s clipper:build_type=RelWithDebInfo
+        run: conan install "cura/5.2.1@"$Env:CURA_CONAN_VERSION ${{ inputs.conan_args }} --build=missing --update -if cura_inst -g VirtualPythonEnv -o cura:enterprise="$Env:ENTERPRISE" -o cura:staging="$Env:STAGING" -o cura:internal=${{ inputs.conan_internal }} -c tools.build:skip_test=True -s curaengine:build_type=RelWithDebInfo -s arcus:build_type=RelWithDebInfo -s clipper:build_type=RelWithDebInfo
 
       - name: Set Environment variables for Cura (Powershell)
         run: |
@@ -119,18 +125,18 @@ jobs:
           .\cura_inst\Scripts\activate_github_actions_version_env.ps1
 
       - name: Create the Cura dist
-        run: pyinstaller ./cura_inst/UltiMaker-Cura.spec
+        run: pyinstaller ./cura_inst/Ultimaker-Cura.spec
 
       - name: Output the name file name and extension
         id: filename
         run: python .github/workflows/runner_scripts/cura_installer_filename.py --os ${{ runner.os }} --arch ${{ inputs.architecture }} --enterprise ${{ inputs.enterprise }} --internal ${{ inputs.conan_internal }}
 
-      - name: Summarize the used dependencies
-        run: python .github/workflows/runner_scripts/summarize_used_dependencies.py --installer_filename ${{ steps.filename.outputs.INSTALLER_FILENAME }}
+      # - name: Summarize the used dependencies
+      #   run: python .github/workflows/runner_scripts/summarize_used_dependencies.py --installer_filename ${{ steps.filename.outputs.INSTALLER_FILENAME }}
 
       - name: Create the Windows msi installer (Powershell)
         run: |
-          python ..\cura_inst\packaging\msi\create_windows_msi.py ..\cura_inst .\UltiMaker-Cura "${{steps.filename.outputs.INSTALLER_FILENAME }}.msi" "$Env:CURA_APP_NAME"
+          python ..\cura_inst\packaging\msi\create_windows_msi.py ..\cura_inst .\Ultimaker-Cura "${{steps.filename.outputs.INSTALLER_FILENAME }}.msi" "$Env:CURA_APP_NAME"
         working-directory: dist
 
       # - name: Sign the Windows msi installer (Powershell)
@@ -197,20 +203,20 @@ jobs:
           retention-days: 5
 
       # NOTE: The extension is .sh, since this isn't going to build-environment, so not on the Win build image.
-      - name: Write the run info
-        if: ${{ always() }}
-        shell: python
-        run: |
-          import os
-          with open("run_info.sh", "w") as f:
-              f.writelines(f'echo "CURA_VERSION_FULL={os.environ["CURA_VERSION_FULL"]}" >> $GITHUB_ENV\n')
+      # - name: Write the run info
+      #   if: ${{ always() }}
+      #   shell: python
+      #   run: |
+      #     import os
+      #     with open("run_info.sh", "w") as f:
+      #         f.writelines(f'echo "CURA_VERSION_FULL={os.environ["CURA_VERSION_FULL"]}" >> $GITHUB_ENV\n')
 
-      # NOTE: The extension is .sh, since this isn't going to build-environment, so not on the Win build image.
-      - name: Upload the run info
-        if: ${{ always() }}
-        uses: actions/upload-artifact@v4.3.3
-        with:
-          name: windows-run-info
-          path: |
-            run_info.sh
-          retention-days: 5
+      # # NOTE: The extension is .sh, since this isn't going to build-environment, so not on the Win build image.
+      # - name: Upload the run info
+      #   if: ${{ always() }}
+      #   uses: actions/upload-artifact@v4.3.3
+      #   with:
+      #     name: windows-run-info
+      #     path: |
+      #       run_info.sh
+      #     retention-days: 5
