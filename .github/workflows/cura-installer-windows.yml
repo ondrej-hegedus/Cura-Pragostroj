@@ -121,8 +121,14 @@ jobs:
       - name: TREE
         run: tree /F
 
+      - name: Install the Packages (Powershell)
+        run: conan install . cura/5.2.1 ${{ inputs.conan_args }} --build=missing --update -if cura_inst -g VirtualPythonEnv -o cura:enterprise="$Env:ENTERPRISE" -o cura:staging="$Env:STAGING" -o cura:internal=False -c tools.build:skip_test=True -s curaengine:build_type=RelWithDebInfo -s arcus:build_type=RelWithDebInfo -s clipper:build_type=RelWithDebInfo
+
       - name: Create the Packages (create)
         run: conan create . $CURA_CONAN_VERSION --build=missing --update
+
+      - name: Install the Packages (Powershell)
+        run: conan install cura/5.2.1 ${{ inputs.conan_args }} --build=missing --update -if cura_inst -g VirtualPythonEnv -o cura:enterprise="$Env:ENTERPRISE" -o cura:staging="$Env:STAGING" -o cura:internal=False -c tools.build:skip_test=True -s curaengine:build_type=RelWithDebInfo -s arcus:build_type=RelWithDebInfo -s clipper:build_type=RelWithDebInfo
 
       - name: TREE
         run: tree /F
@@ -130,9 +136,6 @@ jobs:
       - name: Conan search
         run: conan search "*"
 
-      - name: Install the Packages (Powershell)
-        run: conan install . cura/5.2.1 ${{ inputs.conan_args }} --build=missing --update -if cura_inst -g VirtualPythonEnv -o cura:enterprise="$Env:ENTERPRISE" -o cura:staging="$Env:STAGING" -o cura:internal=False -c tools.build:skip_test=True -s curaengine:build_type=RelWithDebInfo -s arcus:build_type=RelWithDebInfo -s clipper:build_type=RelWithDebInfo
-      
       - name: ls
         run: |
           ls
