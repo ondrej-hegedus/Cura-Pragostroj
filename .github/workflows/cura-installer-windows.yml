@@ -82,6 +82,9 @@ jobs:
           cache: pip
           cache-dependency-path: .github\workflows\requirements-runner.txt
 
+      - name: TREE
+        run: tree /F
+
       - name: Install Python requirements for - create
         run: pip install -r .github/workflows/requirements-conan-package.txt
 
