@@ -63,6 +63,11 @@ jobs:
     runs-on: ${{ inputs.operating_system }}
 
     steps:
+      - name: TREE
+        # run: tree /F --help
+        run: get-help tree
+
+        
       - name: Checkout Cura repo
         uses: actions/checkout@v4
         with:
@@ -82,8 +87,7 @@ jobs:
           cache: pip
           cache-dependency-path: .github\workflows\requirements-runner.txt
 
-      - name: TREE
-        run: tree /F --help
+
 
       - name: Install Python requirements for - create
         run: pip install -r .github/workflows/requirements-conan-package.txt
