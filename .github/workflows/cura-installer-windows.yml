@@ -133,8 +133,13 @@ jobs:
       - name: Install the Packages (Powershell)
         run: conan install . cura/5.2.1 ${{ inputs.conan_args }} --build=missing --update -if cura_inst -g VirtualPythonEnv -o cura:enterprise="$Env:ENTERPRISE" -o cura:staging="$Env:STAGING" -o cura:internal=False -c tools.build:skip_test=True -s curaengine:build_type=RelWithDebInfo -s arcus:build_type=RelWithDebInfo -s clipper:build_type=RelWithDebInfo
       
+      - name: ls
+        run: |
+          ls
+          ls cura_inst
+      
       - name: TREE
-        run: tree /F
+        run: tree /F /A | Where-Object {$_.TrimStart() -match '^[| `]{0,3}[^+| `]'}
 
       - name: Conan search
         run: conan search "*"
