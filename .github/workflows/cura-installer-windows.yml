@@ -111,6 +111,9 @@ jobs:
       #   run: |
       #     conan config install https://github.com/Ultimaker/conan-config.git -a "-b runner/internal"
       #     conan user -p ${{ secrets.CONAN_PASS }} -r cura-private ${{ secrets.CONAN_USER }}
+      
+      - name: Conan search
+        run: conan search "*"
 
       - name: Create the Packages (create)
         run: conan create . $CURA_CONAN_VERSION --build=missing --update
@@ -118,8 +121,8 @@ jobs:
       - name: Conan search
         run: conan search "*"
 
-      - name: Create the Packages (Powershell)
-        run: conan install cura/5.2.1@pragostroj-cura/5.2.1 ${{ inputs.conan_args }} --build=missing --update -if cura_inst -g VirtualPythonEnv -o cura:enterprise="$Env:ENTERPRISE" -o cura:staging="$Env:STAGING" -o cura:internal=${{ inputs.conan_internal }} -c tools.build:skip_test=True -s curaengine:build_type=RelWithDebInfo -s arcus:build_type=RelWithDebInfo -s clipper:build_type=RelWithDebInfo
+      - name: Install the Packages (Powershell)
+        run: conan install cura/5.2.1 ${{ inputs.conan_args }} --build=missing --update -if cura_inst -g VirtualPythonEnv -o cura:enterprise="$Env:ENTERPRISE" -o cura:staging="$Env:STAGING" -o cura:internal=${{ inputs.conan_internal }} -c tools.build:skip_test=True -s curaengine:build_type=RelWithDebInfo -s arcus:build_type=RelWithDebInfo -s clipper:build_type=RelWithDebInfo
 
       - name: Set Environment variables for Cura (Powershell)
         run: |
