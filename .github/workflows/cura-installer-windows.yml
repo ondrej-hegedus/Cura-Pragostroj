@@ -63,11 +63,7 @@ jobs:
     runs-on: ${{ inputs.operating_system }}
 
     steps:
-      - name: TREE
-        # run: tree /F --help
-        run: get-help tree
-
-        
+      
       - name: Checkout Cura repo
         uses: actions/checkout@v4
         with:
@@ -122,15 +118,27 @@ jobs:
       - name: Conan search
         run: conan search "*"
 
+      - name: TREE
+        run: tree /F
+
       - name: Create the Packages (create)
         run: conan create . $CURA_CONAN_VERSION --build=missing --update
+
+      - name: TREE
+        run: tree /F
 
       - name: Conan search
         run: conan search "*"
 
       - name: Install the Packages (Powershell)
         run: conan install . cura/5.2.1 ${{ inputs.conan_args }} --build=missing --update -if cura_inst -g VirtualPythonEnv -o cura:enterprise="$Env:ENTERPRISE" -o cura:staging="$Env:STAGING" -o cura:internal=False -c tools.build:skip_test=True -s curaengine:build_type=RelWithDebInfo -s arcus:build_type=RelWithDebInfo -s clipper:build_type=RelWithDebInfo
+      
+      - name: TREE
+        run: tree /F
 
+      - name: Conan search
+        run: conan search "*"
+        
       - name: Set Environment variables for Cura (Powershell)
         run: |
           echo "${Env:WIX}\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
