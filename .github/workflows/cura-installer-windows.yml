@@ -127,7 +127,7 @@ jobs:
       - name: Conan search
         run: conan search "*"
       - name: TREE - l 3
-        run: tree /F /A | Where-Object {$_.TrimStart() -match '^[| `]{0,3}[^+| `]'}
+        run: (get-childitem -Path . -Recurse -Directory -Depth 3).FullName
 
       - name: Create the Packages (create)
         # run: conan create . $CURA_CONAN_VERSION --build=missing --update
@@ -136,13 +136,10 @@ jobs:
       - name: Conan search
         run: conan search "*"
       - name: TREE - l 3
-        run: tree /F /A | Where-Object {$_.TrimStart() -match '^[| `]{0,3}[^+| `]'}
+        run: (get-childitem -Path . -Recurse -Directory -Depth 3).FullName
 
       - name: Install the Packages (Powershell)
         run: conan install cura/5.2.1@pragostroj-cura/5.2.1 ${{ inputs.conan_args }} --build=missing --update -if cura_inst -g VirtualPythonEnv -o cura:enterprise="$Env:ENTERPRISE" -o cura:staging="$Env:STAGING" -o cura:internal=False -c tools.build:skip_test=True -s curaengine:build_type=RelWithDebInfo -s arcus:build_type=RelWithDebInfo -s clipper:build_type=RelWithDebInfo
-
-      # - name: TREE
-      #   run: tree /F
 
       - name: Conan search
         run: conan search "*"
@@ -153,7 +150,7 @@ jobs:
           ls cura_inst
       
       - name: TREE - l 3
-        run: tree /F /A | Where-Object {$_.TrimStart() -match '^[| `]{0,3}[^+| `]'}
+        run: (get-childitem -Path . -Recurse -Directory -Depth 3).FullName
 
       - name: Conan search
         run: conan search "*"
