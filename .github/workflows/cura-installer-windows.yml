@@ -171,6 +171,9 @@ jobs:
       # - name: Summarize the used dependencies
       #   run: python .github/workflows/runner_scripts/summarize_used_dependencies.py --installer_filename ${{ steps.filename.outputs.INSTALLER_FILENAME }}
 
+      - name: TREE
+        run: tree /F
+
       - name: Create the Windows msi installer (Powershell)
         # run: python ..\cura_inst\packaging\msi\create_windows_msi.py ..\cura_inst .\Ultimaker-Cura "${{steps.filename.outputs.INSTALLER_FILENAME }}.msi" "$Env:CURA_APP_NAME"
         run: python ..\cura_inst\packaging\msi\create_windows_msi.py ..\cura_inst .\Ultimaker-Cura "${{steps.filename.outputs.INSTALLER_FILENAME }}.msi" PragostrojCura
