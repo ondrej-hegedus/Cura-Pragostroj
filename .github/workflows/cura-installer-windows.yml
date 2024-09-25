@@ -174,6 +174,10 @@ jobs:
       - name: TREE
         run: tree /F
 
+      - name: cat wxs (Powershell)
+        run: cat UltiMaker-Cura.wxs
+        working-directory: dist
+
       - name: Create the Windows msi installer (Powershell)
         # run: python ..\cura_inst\packaging\msi\create_windows_msi.py ..\cura_inst .\Ultimaker-Cura "${{steps.filename.outputs.INSTALLER_FILENAME }}.msi" "$Env:CURA_APP_NAME"
         run: python ..\cura_inst\packaging\msi\create_windows_msi.py ..\cura_inst .\Ultimaker-Cura "${{steps.filename.outputs.INSTALLER_FILENAME }}.msi" PragostrojCura
